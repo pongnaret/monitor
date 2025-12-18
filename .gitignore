@@ -1,0 +1,45 @@
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Docker
+.env
+.env.local
+*.env.local
+
+# MySQL
+mysql_data/
+mysql_init/
+
+# Backup files
+backup/
+*.sql
+*.tar.gz

@@ -1,0 +1,70 @@
+version: '3.8'
+
+services:
+  # MySQL Database
+  mysql:
+    image: mysql:8.0
+    container_name: monitor_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-root_password_change_me}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-monitor_db}
+      MYSQL_USER: ${MYSQL_USER:-monitor_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-monitor_password_change_me}
+      TZ: Asia/Bangkok
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql_init:/docker-entrypoint-initdb.d
+    networks:
+      - monitor_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-root_password_change_me}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Monitor Server
+  server:
+    build: .
+    container_name: monitor_server
+    restart: unless-stopped
+    environment:
+      # Database configuration
+      DB_TYPE: mysql
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: ${MYSQL_DATABASE:-monitor_db}
+      DB_USER: ${MYSQL_USER:-monitor_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-monitor_password_change_me}
+
+      # Server configuration
+      SERVER_HOST: 0.0.0.0
+      SERVER_PORT: 8000
+
+      # Timezone
+      TZ: Asia/Bangkok
+    ports:
+      - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - monitor_network
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8000/api/computers', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+networks:
+  monitor_network:
+    driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local

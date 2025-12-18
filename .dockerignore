@@ -1,0 +1,63 @@
+# Git
+.git
+.gitignore
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+env/
+venv/
+ENV/
+.venv
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+mysql_data/
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose*.yml
+*.bat
+
+# Documentation
+*.md
+!README.md
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Environment files
+.env
+.env.*
+
+# Backup
+backup/
+*.sql
+*.tar.gz
+
+# Agent files (not needed in server container)
+agent.py
+config_agent_template.py
+start_agent.bat
+install_agent.bat
+INSTALL_AGENT.md
+PACKAGE_FOR_AGENTS.md
